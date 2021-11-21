@@ -20,6 +20,7 @@ class QueryBuilder:
         return [
             {
                 "object": obj,
+                "rules": self.parsed_rule_set,
                 "selected": self.object_matches_rules(obj),
                 "results": self.object_results_inspection(obj)
             } for obj in objects

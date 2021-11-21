@@ -16,7 +16,7 @@ pip install jqqb
 Usage Example:
 
 ```py
-from jqqb.evaluator import Evaluator
+from jqqb import QueryBuilder
 rule_json = {
     "condition": "AND",
     "rules": [{
@@ -54,7 +54,7 @@ rule_json = {
 }
 
 
-evaluator = Evaluator(rule_json)
+evaluator = QueryBuilder(rule_json)
 object_1 = {'type': "ec2", "tags": [{"name": "hello"}, {"name": "asdfasfproduction_instance"}]}
 object_2 = {'type': "ami", "tags": [{"name": "development"}, {"name": "asfdafdroduction_instance"}, {"name": "proction"}]}
 objects = [object_1, object_2]
@@ -67,4 +67,88 @@ Result:
 
 ```output
 [{'type': 'ami', 'tags': [{'name': 'development'}, {'name': 'asfdafdroduction_instance'}, {'name': 'proction'}]}]
+
+[
+    {
+        'object': {'type': 'ec2', 'tags': [{'name': 'hello'}, {'name': 'asdfasfproduction_instance'}]}, 
+        'selected': False, 
+        'results': [
+            (
+                {'id': 'tagname', 'field': 'tags.name', 'type': 'string', 'input': 'text', 'operator': 'not_contains', 'value': 'production'}, 
+                (['hello', 'asdfasfproduction_instance'], 'production', False)
+            ), 
+            (
+                {'id': 'tagname', 'field': 'tags.name', 'type': 'string', 'input': 'text', 'operator': 'begins_with', 'value': 'development'}, 
+                (['hello', 'asdfasfproduction_instance'], 'development', False)
+            ), 
+            (
+                {
+                    'condition': 'OR', 
+                    'rules': [
+                        {
+                            'id': 'type', 
+                            'field': 'type', 
+                            'type': 'string', 
+                            'input': 'text', 
+                            'operator': 'equal', 
+                            'value': 'ec2'
+                        }, {
+                            'id': 'type', 
+                            'field': 'type', 
+                            'type': 'string', 
+                            'input': 'text', 
+                            'operator': 'equal', 
+                            'value': 'ami'
+                        }
+                    ]
+                }, 
+                [
+                    (
+                        {'id': 'type', 'field': 'type', 'type': 'string', 'input': 'text', 'operator': 'equal', 'value': 'ec2'}, 
+                        ('ec2', 'ec2', True)
+                    ), 
+                    (
+                        {'id': 'type', 'field': 'type', 'type': 'string', 'input': 'text', 'operator': 'equal', 'value': 'ami'}, 
+                        ('ec2', 'ami', False)
+                    )
+                ]
+            )
+        ]
+    }, 
+    {
+        'object': {'type': 'ami', 'tags': [{'name': 'development'}, {'name': 'asfdafdroduction_instance'}, {'name': 'proction'}]}, 
+        'selected': True, 
+        'results': [
+            (
+                {'id': 'tagname', 'field': 'tags.name', 'type': 'string', 'input': 'text', 'operator': 'not_contains', 'value': 'production'}, 
+                (
+                    ['development', 'asfdafdroduction_instance', 'proction'], 'production', True
+                )
+            ), (
+                {'id': 'tagname', 'field': 'tags.name', 'type': 'string', 'input': 'text', 'operator': 'begins_with', 'value': 'development'}, 
+                (
+                    ['development', 'asfdafdroduction_instance', 'proction'], 'development', True
+                )
+            ), (
+                {
+                    'condition': 'OR', 
+                    'rules': [
+                        {'id': 'type', 'field': 'type', 'type': 'string', 'input': 'text', 'operator': 'equal', 'value': 'ec2'}, 
+                        {'id': 'type', 'field': 'type', 'type': 'string', 'input': 'text', 'operator': 'equal', 'value': 'ami'}
+                    ]
+                }, [
+                    (
+                        {'id': 'type', 'field': 'type', 'type': 'string', 'input': 'text', 'operator': 'equal', 'value': 'ec2'}, 
+                        ('ami', 'ec2', False)
+                    ), (
+                        {'id': 'type', 'field': 'type', 'type': 'string', 'input': 'text', 'operator': 'equal', 'value': 'ami'}, 
+                        ('ami', 'ami', True)
+                    )
+                ]
+            )
+        ]
+    }
+]
+
+
 ```

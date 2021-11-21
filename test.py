@@ -1,6 +1,4 @@
-import json
-
-from jqqb.evaluator import Evaluator
+from jqqb import QueryBuilder
 
 
 rule_json = {
@@ -41,14 +39,14 @@ rule_json = {
 
 DIVIDER = "\n----\n"
 
-evaluator = Evaluator(rule_json)
+query_builder = QueryBuilder(rule_json)
 object_1 = {'type': "ec2", "tags": [{"name": "hello"}, {"name": "asdfasfproduction_instance"}]}
 object_2 = {'type': "ami", "tags": [{"name": "development"}, {"name": "asfdafdroduction_instance"}, {"name": "proction"}]}
 objects = [object_1, object_2]
 
 print(DIVIDER)
 
-print(f"Parsed rule set:\n{evaluator.parsed_rule_set}")
+print(f"Parsed rule set:\n{query_builder.parsed_rule_set}")
 print(DIVIDER)
 
 print(f"Objects:\n{objects}")
@@ -56,9 +54,9 @@ print(f"Objects:\n{objects}")
 print(DIVIDER)
 
 print("Match objects:")
-print(evaluator.match_objects(objects))
+print(query_builder.match_objects(objects))
 print(DIVIDER)
 
 print("Inspect objects:")
-print(evaluator.inspect_objects(objects))
+print(query_builder.inspect_objects(objects))
 print(DIVIDER)

@@ -10,8 +10,14 @@ class Evaluator:
         else:
             self.parsed_rule_set = rule_set
 
-    def get_matching_objects(self, objects):
+    def match_objects(self, objects):
         return list(filter(lambda x: self.object_matches_rules(x), objects))
 
     def object_matches_rules(self, obj):
         return RuleGroup(self.parsed_rule_set).evaluate(obj)
+
+    def inspect_objects(self, objects):
+        return list(map(lambda x: self.object_matches_rules(x), objects))
+
+    def object_rules_inspection(self, obj):
+        return RuleGroup(self.parsed_rule_set).inspect(obj)

@@ -1,5 +1,5 @@
 import json
-from jqqb_evaluator.rule_group import RuleGroup
+from jqqb.rule_group import RuleGroup
 
 
 class Evaluator:
@@ -17,7 +17,13 @@ class Evaluator:
         return RuleGroup(self.parsed_rule_set).evaluate(obj)
 
     def inspect_objects(self, objects):
-        return list(map(lambda x: self.object_matches_rules(x), objects))
+        return [
+            {
+                "object": obj,
+                "selected": self.object_matches_rules(obj),
+                "results": self.object_results_inspection(obj)
+            } for obj in objects
+        ]
 
-    def object_rules_inspection(self, obj):
+    def object_results_inspection(self, obj):
         return RuleGroup(self.parsed_rule_set).inspect(obj)

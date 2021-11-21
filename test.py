@@ -1,22 +1,8 @@
-# jQueryQueryBuilder
-Python Rule evaluator for jQuery-QueryBuilder. It evaluates rules agains provided objects.
+import json
 
-[Website](http://www.shunyeka.com) • [autobotAI Cloud Governance](https://autobot.live/)
-
-Inspired from [SixiS/jquery_query_builder-rails](https://github.com/SixiS/jquery_query_builder-rails)
-
-## Usage
-
-Install the package.
-
-```
-pip install jqqb
-```
-
-Usage Example:
-
-```py
 from jqqb.evaluator import Evaluator
+
+
 rule_json = {
     "condition": "AND",
     "rules": [{
@@ -53,18 +39,26 @@ rule_json = {
     }]
 }
 
+DIVIDER = "\n----\n"
 
 evaluator = Evaluator(rule_json)
 object_1 = {'type': "ec2", "tags": [{"name": "hello"}, {"name": "asdfasfproduction_instance"}]}
 object_2 = {'type': "ami", "tags": [{"name": "development"}, {"name": "asfdafdroduction_instance"}, {"name": "proction"}]}
 objects = [object_1, object_2]
 
+print(DIVIDER)
+
+print(f"Parsed rule set:\n{evaluator.parsed_rule_set}")
+print(DIVIDER)
+
+print(f"Objects:\n{objects}")
+
+print(DIVIDER)
+
+print("Match objects:")
 print(evaluator.match_objects(objects))
+print(DIVIDER)
+
+print("Inspect objects:")
 print(evaluator.inspect_objects(objects))
-```
-
-Result:
-
-```output
-[{'type': 'ami', 'tags': [{'name': 'development'}, {'name': 'asfdafdroduction_instance'}, {'name': 'proction'}]}]
-```
+print(DIVIDER)

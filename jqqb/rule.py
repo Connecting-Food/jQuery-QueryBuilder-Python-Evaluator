@@ -1,7 +1,8 @@
 from datetime import datetime
 
 from pytimeparse.timeparse import timeparse
-from jqqb_evaluator.operators import Operators
+
+from jqqb.operators import Operators
 
 
 class Rule:
@@ -14,10 +15,19 @@ class Rule:
         self.value = rule_dict["value"]
 
     def evaluate(self, obj):
-        return self.get_operator()(self.get_input(obj), self.get_value())
+        result = self.get_operator()(self.get_input(obj), self.get_value())
+        return result
+
+    def inputs(self, obj):
+        inputs = self.get_input(obj)
+        return inputs
+
+    def values(self):
+        values = self.get_value()
+        return values
 
     def inspect(self, obj):
-        return self.operator, self.get_input(obj), self.get_value()
+        return self.inputs(obj), self.values(), self.evaluate(obj)
 
     def get_operator(self):
         return getattr(Operators, "eval_" + self.operator)

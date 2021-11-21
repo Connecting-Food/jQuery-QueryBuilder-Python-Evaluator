@@ -4,14 +4,15 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="jqqb_evaluator",
+    name="jqqb",
     version="0.0.1",
-    author="Amit Chotaliya",
-    author_email="amit@shunyeka.com",
-    description="Python evaluator for jQuery-QueryBuilder rules",
+    author="Connecting Food",
+    author_email="developers@connecting-food.com",
+    description="Python parsing, evaluation and inspection tools "
+                "for jQuery-QueryBuilder rules",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/shunyeka/jQuery-QueryBuilder-Python-Evaluator",
+    url="https://github.com/Connecting-Food/jQueryQueryBuilder",
     packages=setuptools.find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",

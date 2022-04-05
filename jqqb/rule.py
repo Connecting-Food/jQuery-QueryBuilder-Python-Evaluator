@@ -78,9 +78,15 @@ class Rule:
             return int(value_to_cast)
         elif self.type == "double":
             return float(value_to_cast)
-        elif self.type == "date" or self.type == "datetime":
+        elif self.type == "datetime":
             return (
                 datetime.strptime(value_to_cast, "%Y-%m-%dT%H:%M:%S.%fZ")
+                if isinstance(value_to_cast, str)
+                else value_to_cast
+            )
+        elif self.type == "date":
+            return (
+                datetime.strptime(value_to_cast, "%Y-%m-%d")
                 if isinstance(value_to_cast, str)
                 else value_to_cast
             )
@@ -103,4 +109,6 @@ class Rule:
                     "certainly",
                     "uh-huh",
                 ]
+        elif self.type == "list":
+            ...
         return value_to_cast

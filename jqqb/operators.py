@@ -12,6 +12,9 @@ class Operators:
 
     @staticmethod
     def eval_between(inputs, bounds):
+        if inputs is None:
+            return False
+
         return bounds[0] < inputs < bounds[1]
 
     @staticmethod
@@ -39,18 +42,29 @@ class Operators:
 
     @staticmethod
     def eval_greater(left, right):
+        if left is None:
+            return False
+
         if isinstance(left, list):
             return any(map(lambda x: x > right, left))
         return left > right
 
     @staticmethod
     def eval_greater_or_equal(left, right):
+        if left is None:
+            return False
+
         if isinstance(left, list):
             return any(map(lambda x: x >= right, left))
         return left >= right
 
     @staticmethod
     def eval_in(left, right):
+        if left is None:
+            return False
+
+        if isinstance(left, list):
+            return all([_ in right for _ in left])
         return left in right
 
     @staticmethod
@@ -75,12 +89,18 @@ class Operators:
 
     @staticmethod
     def eval_less(left, right):
+        if left is None:
+            return False
+
         if isinstance(left, list):
             return any(map(lambda x: x < right, left))
         return left < right
 
     @staticmethod
     def eval_less_or_equal(left, right):
+        if left is None:
+            return False
+
         if isinstance(left, list):
             return any(map(lambda x: x <= right, left))
         return left <= right
@@ -93,6 +113,9 @@ class Operators:
 
     @staticmethod
     def eval_not_between(inputs, bounds):
+        if inputs is None:
+            return False
+
         if isinstance(inputs, list):
             return not any(
                 map(lambda x: x <= bounds[0] or x >= bounds[1], inputs)
@@ -126,4 +149,9 @@ class Operators:
 
     @staticmethod
     def eval_not_in(left, right):
-        return left not in right
+        if left is None:
+            return False
+
+        if isinstance(left, list):
+            return not all([_ in right for _ in left])
+        return left in right

@@ -1,0 +1,69 @@
+name: CI
+
+on:
+  pull_request:
+    branches:
+      - master
+      - develop
+
+  workflow_dispatch:
+
+jobs:
+  lint-app-dockerfile:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Lint backend Dockerfile
+        run: |
+          docker run \
+            --rm \
+            -v "$PWD"/app/Dockerfile:/dockerfilelinter/Dockerfile \
+            petitnuage/dockerfile-linter:latest \
+            linter \
+            -i EC0001,EF0004,ER0001,ER0007,ER0012 \
+            -f Dockerfile
+
+  docker-compose-file:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Lint backend Dockerfile
+        run: |
+          cp .env.default .env
+          cp app/.env.default app/.env
+          cp postgres/.env.default postgres/.env
+          docker-compose config
+
+  black:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Black 3.8
+        uses: lgeiger/black-action@v1.0.1
+        with:
+          args: ". -tpy38 -l80 --check"
+
+  flake8:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: Flake8
+        run: |
+          pip install flake8 flake8-django && \
+          flake8 --select=C,E,F,W,DJ \
+            --max-line-length 80 \
+            --max-complexity 10 \
+            --ignore=W503

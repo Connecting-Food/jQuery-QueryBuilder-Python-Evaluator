@@ -1,0 +1,103 @@
+name: Build
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - master
+      - develop
+  workflow_dispatch:
+
+jobs:
+  build-django:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Login to Private Docker Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ secrets.HARBOR_REGISTRY }}
+          username: ${{ secrets.HARBOR_USERNAME }}
+          password: ${{ secrets.HARBOR_PASSWORD }}
+
+      - name: Compile messages (i18n)
+        run: |
+          cp .env.default .env
+          cp app/.env.default app/.env
+          cp postgres/.env.default postgres/.env
+          docker-compose run --rm --no-deps app python manage.py compilemessages -f
+
+      - name: Build & Push django image
+        uses: docker/build-push-action@v2
+        with:
+          context: ./app
+          file: ./app/Dockerfile
+          pull: true
+          push: true
+          tags: |
+            ${{ secrets.HARBOR_REGISTRY }}/${{ secrets.HARBOR_REPOSITORY }}/django:${{ github.base_ref }}
+
+  build-assets:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Login to Private Docker Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ secrets.HARBOR_REGISTRY }}
+          username: ${{ secrets.HARBOR_USERNAME }}
+          password: ${{ secrets.HARBOR_PASSWORD }}
+
+      - name: Collect staticfiles
+        run: |
+          cp .env.default .env
+          cp app/.env.default app/.env
+          cp postgres/.env.default postgres/.env
+          docker-compose run --rm --no-deps app python manage.py collectstatic --no-input --clear
+          mkdir -p staticfiles/assets
+          cp -rv app/staticfiles/* staticfiles/assets
+
+      - name: Build & Push assets image
+        uses: docker/build-push-action@v2
+        with:
+          context: ./staticfiles
+          file: ./staticfiles/Dockerfile
+          pull: true
+          push: true
+          tags: |
+            ${{ secrets.HARBOR_REGISTRY }}/${{ secrets.HARBOR_REPOSITORY }}/assets:${{ github.base_ref }}
+            
+  deploy-staging:
+    runs-on: ubuntu-latest
+    if: github.base_ref == 'develop' && github.event.pull_request.merged == true
+    needs: ["build-django", "build-assets"]
+    steps:
+      - name: Repository Dispatch
+        uses: myrotvorets/trigger-repository-dispatch-action@1.0.0
+        with:
+          token: ${{ secrets.REPOSITORY_ACCESS_TOKEN }}
+          repo: Connecting-Food/helm-nextgen
+          type: staging-service-upgrade
+          payload: |- 
+            { 
+              "service": "django"
+            }
+            

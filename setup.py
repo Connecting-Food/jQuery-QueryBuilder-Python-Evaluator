@@ -4,7 +4,7 @@ import unittest
 
 def unittest_test_suite():
     test_loader = unittest.TestLoader()
-    test_suite = test_loader.discover('tests', pattern='test_*.py')
+    test_suite = test_loader.discover("tests", pattern="test_*.py")
     return test_suite
 
 
@@ -13,7 +13,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="jqqb",
-    version="0.0.3",
+    version="0.0.4",
     author="Connecting Food",
     author_email="developers@connecting-food.com",
     description="Python parsing, evaluation and inspection tools "
@@ -28,8 +28,8 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     install_requires=[
-        'pytimeparse~=1.1.8'
+        "pytimeparse~=1.1.8"
     ],
-    python_requires='>=3.6',
-    test_suite='setup.unittest_test_suite',
+    python_requires=">=3.6",
+    test_suite="setup.unittest_test_suite",
 )

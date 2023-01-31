@@ -1,5 +1,6 @@
-build
-dist
-jqqb_evaluator.egg-info/
-venv
+build/
+dist/
+jqqb.egg-info/
+venv/
 .idea
+__pycache__

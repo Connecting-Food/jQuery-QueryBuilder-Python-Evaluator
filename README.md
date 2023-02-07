@@ -150,3 +150,9 @@ Result:
     }
 ]
 ```
+
+## Run tests
+
+```bash
+python setup.py test
+```

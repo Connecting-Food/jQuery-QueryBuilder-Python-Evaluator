@@ -7,13 +7,19 @@ from jqqb.rule import Rule
 class RuleGroup:
     _CONDITIONS = {"AND": all, "OR": any}
 
-    def __init__(self, condition: Literal["AND", "OR"], rules: list[Union["RuleGroup", Rule]]):
+    def __init__(
+        self,
+        condition: Literal["AND", "OR"],
+        rules: list[Union["RuleGroup", Rule]],
+    ):
         self.condition = condition
         self.condition_operation = self._CONDITIONS[condition]
         self.rules = rules
 
     @classmethod
-    def create_rule_group_from_json(cls, rule_group_json: Union[str, dict]) -> "RuleGroup":
+    def create_rule_group_from_json(
+        cls, rule_group_json: Union[str, dict]
+    ) -> "RuleGroup":
         """Construct a RuleGroup instance from a given JSON.
 
         Note:
@@ -51,5 +57,7 @@ class RuleGroup:
         )
 
     def get_predicate(self, object: dict) -> str:
-        rule_predicates = [rule.get_predicate(object=object) for rule in self.rules]
+        rule_predicates = [
+            rule.get_predicate(object=object) for rule in self.rules
+        ]
         return f"{self.condition}({', '.join(rule_predicates)})"

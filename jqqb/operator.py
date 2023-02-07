@@ -1,8 +1,15 @@
-class Operators:
+class Operator:
+    @staticmethod
+    def get_operator(operator_name: str) -> callable:
+        """Retrieve operator method adding 'eval_'
+        in front of the given 'operator_name'.
+        """
+        return getattr(Operator, f"eval_{operator_name}")
 
-    # left = The property of the object being evaluated.
-    # right = The value that was entered/selected by the user
-    # from the frontend (rule `value` property)
+    @staticmethod
+    def get_operator_predicate(operator: callable) -> str:
+        """Inverse method of get_operator."""
+        return operator.__name__[5:]
 
     @staticmethod
     def eval_begins_with(left, right):
@@ -23,7 +30,7 @@ class Operators:
 
     @staticmethod
     def eval_contains_any(left, right):
-        return any(map(lambda x: Operators.eval_contains(left, x)), right)
+        return any(map(lambda x: Operator.eval_contains(left, x)), right)
 
     @staticmethod
     def eval_contains_key(left, right):
@@ -32,7 +39,7 @@ class Operators:
 
         if isinstance(left, list):
             return any(
-                map(lambda x: Operators.eval_contains_key(x, right), left)
+                map(lambda x: Operator.eval_contains_key(x, right), left)
             )
 
         return False
@@ -77,23 +84,23 @@ class Operators:
         return left in right
 
     @staticmethod
-    def eval_is_empty(inputs, _):
+    def eval_is_empty(inputs):
         if isinstance(inputs, list):
             return not bool(inputs)
         return not bool(inputs and inputs.strip())
 
     @staticmethod
-    def eval_is_not_empty(inputs, _):
+    def eval_is_not_empty(inputs):
         if isinstance(inputs, list):
             return bool(inputs)
         return bool(inputs and inputs.strip())
 
     @staticmethod
-    def eval_is_not_null(inputs, _):
+    def eval_is_not_null(inputs):
         return inputs is not None
 
     @staticmethod
-    def eval_is_null(inputs, _):
+    def eval_is_null(inputs):
         return inputs is None
 
     @staticmethod

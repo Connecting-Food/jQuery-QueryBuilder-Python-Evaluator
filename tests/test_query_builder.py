@@ -1,3 +1,4 @@
+import json
 import unittest
 
 from jqqb import QueryBuilder, RuleGroup
@@ -80,5 +81,13 @@ class TestQueryBuilderInspect(unittest.TestCase):
         self.assertEqual(
             result["predicate"], "AND(equal(dummy_value, dummy_value))"
         )
-        self.assertIsInstance(result["rules"], RuleGroup)
+        self.assertIsInstance(result["rules"], dict)
         self.assertTrue(result["selected"])
+
+        try:
+            json.dumps(results)
+        except Exception as e:
+            self.assertTrue(
+                False,
+                f"`inspect_objects` result should be JSON serializable: {e}"
+            )

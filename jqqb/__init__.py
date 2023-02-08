@@ -1,30 +1,36 @@
-import json
+from typing import Union
+
 from jqqb.rule_group import RuleGroup
 
 
 class QueryBuilder:
+    def __init__(self, rule_group: RuleGroup):
+        self.rule_group = rule_group
 
-    def __init__(self, rule_set):
-        if isinstance(rule_set, str):
-            self.parsed_rule_set = json.loads(rule_set)
-        else:
-            self.parsed_rule_set = rule_set
+    @classmethod
+    def create_query_builder_from_json(
+        cls, rule_set_json: Union[str, dict]
+    ) -> "QueryBuilder":
+        return cls(
+            rule_group=RuleGroup.create_rule_group_from_json(
+                rule_group_json=rule_set_json
+            )
+        )
 
-    def match_objects(self, objects):
-        return list(filter(lambda x: self.object_matches_rules(x), objects))
-
-    def object_matches_rules(self, obj):
-        return RuleGroup(self.parsed_rule_set).evaluate(obj)
-
-    def inspect_objects(self, objects):
+    def match_objects(self, objects: list[dict]) -> list[dict]:
         return [
-            {
-                "object": obj,
-                "rules": self.parsed_rule_set,
-                "selected": self.object_matches_rules(obj),
-                "results": self.object_results_inspection(obj)
-            } for obj in objects
+            object for object in objects if self.object_matches_rules(object)
         ]
 
-    def object_results_inspection(self, obj):
-        return RuleGroup(self.parsed_rule_set).inspect(obj)
+    def object_matches_rules(self, object: dict) -> dict:
+        return self.rule_group.evaluate(object)
+
+    def inspect_objects(self, objects: list[dict]) -> list[dict]:
+        return [
+            {
+                "object": object,
+                "rules": self.rule_group,
+                "predicate": self.rule_group.get_predicate(object=object),
+                "selected": self.object_matches_rules(object=object),
+            } for object in objects
+        ]

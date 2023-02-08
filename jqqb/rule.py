@@ -1,114 +1,60 @@
-from datetime import datetime
+import json
+from typing import Union
 
-from pytimeparse.timeparse import timeparse
-
-from jqqb.operators import Operators
+from jqqb.input import Input
+from jqqb.operator import Operator
 
 
 class Rule:
-    def __init__(self, rule_dict):
-        self.id = rule_dict["id"]
-        self.field = rule_dict["field"]
-        self.type = rule_dict["type"]
-        self.input = rule_dict["input"]
-        self.operator = rule_dict["operator"]
-        self.value = rule_dict["value"]
+    def __init__(self, operator: Operator, inputs: list[Input]):
+        self.inputs = inputs
+        self.operator = operator
 
-    def evaluate(self, obj):
-        result = self.get_operator()(self.get_input(obj), self.get_value())
-        return result
+    @classmethod
+    def create_rule_from_json(cls, rule_json: Union[dict, str]) -> "Rule":
+        """Construct a Rule instance from a given JSON.
 
-    def inputs(self, obj):
-        inputs = self.get_input(obj)
-        return inputs
-
-    def values(self):
-        values = self.get_value()
-        return values
-
-    def inspect(self, obj):
-        return self.inputs(obj), self.values(), self.evaluate(obj)
-
-    def get_operator(self):
-        return getattr(Operators, "eval_" + self.operator)
-
-    def get_input(self, obj):
-        fields = self.field.split(".")
-        result = obj
-        steps = len(fields)
-        for i in range(steps):
-            last_step = i == steps - 1
-            second_last_step = i == steps - 2
-            result = result.get(fields[i])
-            if (
-                second_last_step
-                and isinstance(result, list)
-                and isinstance(result[0], dict)
-            ):
-                result = [x[fields[steps - 1]] for x in result]
-                break
-            result = (
-                result[0]
-                if (
-                    result is not None
-                    and isinstance(result, list)
-                    and not last_step
+        Note:
+            JSON format:
+            ```
+            {
+                "inputs": list[object],
+                "operator": string
+            }
+            ```
+        """
+        parsed_rule_json = (
+            json.loads(rule_json)
+            if isinstance(rule_json, str)
+            else rule_json
+        )
+        return cls(
+            operator=Operator.get_operator(parsed_rule_json["operator"]),
+            inputs=[
+                Input.create_input_from_json(
+                    input_json=parsed_rule_input_json
                 )
-                else result
-            )
-            if result is None:
-                break
-        if isinstance(result, list):
-            return list(map(lambda x: self.typecast_value(x), result))
-        else:
-            return self.typecast_value(result)
+                for parsed_rule_input_json
+                in parsed_rule_json["inputs"]
+            ]
+        )
 
-    def get_value(self):
-        if isinstance(self.value, list):
-            return list(map(lambda x: self.typecast_value(x), self.value))
-        return self.typecast_value(self.value)
+    def _get_input_values(self, object: dict) -> list:
+        return [input.get_value(object=object) for input in self.inputs]
 
-    def typecast_value(self, value_to_cast):
-        if value_to_cast is None:
-            return None
+    def evaluate(self, object: dict) -> bool:
+        input_values = self._get_input_values(object)
+        return (
+            False
+            if Input.MissingKey in input_values
+            else self.operator(*input_values)
+        )
 
-        if self.type == "string":
-            return str(value_to_cast)
-        elif self.type == "integer":
-            return int(value_to_cast)
-        elif self.type == "double":
-            return float(value_to_cast)
-        elif self.type == "datetime":
-            return (
-                datetime.strptime(value_to_cast, "%Y-%m-%dT%H:%M:%S.%fZ")
-                if isinstance(value_to_cast, str)
-                else value_to_cast
-            )
-        elif self.type == "date":
-            return (
-                datetime.strptime(value_to_cast, "%Y-%m-%d")
-                if isinstance(value_to_cast, str)
-                else value_to_cast
-            )
-        elif self.type == "time":
-            return (
-                timeparse(value_to_cast)
-                if isinstance(value_to_cast, str)
-                else value_to_cast
-            )
-        elif self.type == "boolean":
-            if isinstance(value_to_cast, str):
-                return value_to_cast.lower() in [
-                    "true",
-                    "1",
-                    "t",
-                    "y",
-                    "yes",
-                    "yeah",
-                    "yup",
-                    "certainly",
-                    "uh-huh",
-                ]
-        elif self.type == "list":
-            ...
-        return value_to_cast
+    def get_predicate(self, object: dict) -> str:
+        input_predicates = [
+            str(input.get_value(object=object)) for input in self.inputs
+        ]
+        return (
+            f"{Operator.get_operator_predicate(operator=self.operator)}("
+            f"{', '.join(input_predicates)})"
+        )

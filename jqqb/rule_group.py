@@ -15,6 +15,7 @@ class RuleGroup:
         self.condition = condition
         self.condition_operation = self._CONDITIONS[condition]
         self.rules = rules
+        self._json = None
 
     @classmethod
     def create_rule_group_from_json(
@@ -36,7 +37,7 @@ class RuleGroup:
             if isinstance(rule_group_json, str)
             else rule_group_json
         )
-        return cls(
+        instance = cls(
             condition=parsed_rule_group_json["condition"],
             rules=[
                 cls.create_rule_group_from_json(
@@ -50,6 +51,8 @@ class RuleGroup:
                 in parsed_rule_group_json["rules"]
             ]
         )
+        instance._json = parsed_rule_group_json
+        return instance
 
     def evaluate(self, object: dict) -> bool:
         return self.condition_operation(
@@ -61,3 +64,9 @@ class RuleGroup:
             rule.get_predicate(object=object) for rule in self.rules
         ]
         return f"{self.condition}({', '.join(rule_predicates)})"
+
+    def jsonify(self) -> dict:
+        return {
+            "condition": self.condition,
+            "rules": [rule.jsonify() for rule in self.rules],
+        } if self._json is None else self._json

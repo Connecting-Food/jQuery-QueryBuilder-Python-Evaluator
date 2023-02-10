@@ -57,13 +57,12 @@ class Input:
             else input_json
         )
         field = parsed_input_json["field"]
-        return cls(
-            field=field,
-            type=parsed_input_json["type"],
-            value=(
-                cls.NotRetrievedValue if field else parsed_input_json["value"]
-            ),
-        )
+        data = {"field": field, "type": parsed_input_json["type"]}
+
+        if not field:
+            data["value"] = parsed_input_json["value"]
+
+        return cls(**data)
 
     def get_value(self, object: Optional[dict] = None) -> Any:
         if self.value is self.NotRetrievedValue and object is not None:

@@ -31,9 +31,7 @@ class Rule:
         return cls(
             operator=Operator.get_operator(parsed_rule_json["operator"]),
             inputs=[
-                Input.create_input_from_json(
-                    input_json=parsed_rule_input_json
-                )
+                Input.create_input_from_json(input_json=parsed_rule_input_json)
                 for parsed_rule_input_json
                 in parsed_rule_json["inputs"]
             ]
@@ -57,6 +55,12 @@ class Rule:
         return (
             f"{Operator.get_operator_predicate(operator=self.operator)}("
             f"{', '.join(input_predicates)})"
+        )
+
+    def inspect(self, object: dict) -> tuple:
+        return (
+            *[input.get_value(object=object) for input in self.inputs],
+            self.evaluate(object=object),
         )
 
     def jsonify(self, object: dict) -> dict:

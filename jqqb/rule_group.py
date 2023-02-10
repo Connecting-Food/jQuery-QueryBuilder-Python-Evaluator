@@ -62,6 +62,12 @@ class RuleGroup:
         ]
         return f"{self.condition}({', '.join(rule_predicates)})"
 
+    def inspect(self, object: dict) -> list[tuple]:
+        return [
+            (rule.jsonify(object=object), rule.inspect(object=object))
+            for rule in self.rules
+        ]
+
     def jsonify(self, object: dict) -> dict:
         return {
             "condition": self.condition,

@@ -1,6 +1,5 @@
 import json
 from datetime import date, datetime, time
-from distutils.util import strtobool
 from functools import reduce
 from typing import Any, Optional, Union
 
@@ -13,20 +12,18 @@ class Input:
         pass
 
     _CAST_FUNCTIONS = {
-        "string": str,
-        "integer": int,
-        "double": float,
+        "boolean": bool,
         "datetime": lambda x: (
             datetime.fromisoformat(x) if isinstance(x, str) else x
         ),
         "date": lambda x: (
             date.fromisoformat(x) if isinstance(x, str) else x
         ),
+        "double": float,
+        "integer": int,
+        "string": str,
         "time": lambda x: (
             time.fromisoformat(x) if isinstance(x, str) else x
-        ),
-        "boolean": lambda x: (
-            strtobool(x) if isinstance(x, str) else x
         ),
     }
 

@@ -39,7 +39,6 @@ class Input:
         self.field = field
         self.type = type
         self.value = value
-        self._json = None
 
     @classmethod
     def create_input_from_json(cls, input_json: Union[dict, str]) -> "Input":
@@ -61,15 +60,13 @@ class Input:
             else input_json
         )
         field = parsed_input_json["field"]
-        instance = cls(
+        return cls(
             field=field,
             type=parsed_input_json["type"],
             value=(
                 cls.NotRetrievedValue if field else parsed_input_json["value"]
             ),
         )
-        instance._json = parsed_input_json
-        return instance
 
     def get_value(self, object: Optional[dict] = None) -> Any:
         if self.value is self.NotRetrievedValue and object is not None:
@@ -82,10 +79,12 @@ class Input:
         last_object = reduce(lambda x, y: x.get(y, {}), fields[:-1], object)
         return last_object.get(fields[-1], self.MissingKey)
 
-    def jsonify(self) -> dict:
+    def jsonify(self, object: dict) -> dict:
         return {
-            "field": self.field, "type": self.type, "value": self.value
-        } if self._json is None else self._json
+            "field": self.field,
+            "type": self.type,
+            "value": self.get_value(object=object),
+        }
 
     def typecast_value(self, value_to_cast: Any) -> Any:
         cast_function = self._CAST_FUNCTIONS.get(self.type)

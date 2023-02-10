@@ -58,3 +58,9 @@ class Rule:
             f"{Operator.get_operator_predicate(operator=self.operator)}("
             f"{', '.join(input_predicates)})"
         )
+
+    def jsonify(self, object: dict) -> dict:
+        return {
+            "inputs": [input.jsonify(object=object) for input in self.inputs],
+            "operator": Operator.jsonify(operator=self.operator),
+        }

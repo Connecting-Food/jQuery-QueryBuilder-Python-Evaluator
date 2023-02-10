@@ -29,8 +29,8 @@ class QueryBuilder:
         return [
             {
                 "object": object,
-                "rules": self.rule_group.jsonify(),
                 "predicate": self.rule_group.get_predicate(object=object),
+                "rules": self.rule_group.jsonify(object=object),
                 "selected": self.object_matches_rules(object=object),
             } for object in objects
         ]

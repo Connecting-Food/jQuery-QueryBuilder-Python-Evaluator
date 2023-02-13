@@ -7,9 +7,14 @@ class Operator:
         return getattr(Operator, f"eval_{operator_name}")
 
     @staticmethod
-    def get_operator_predicate(operator: callable) -> str:
+    def jsonify(operator: callable) -> str:
         """Inverse method of get_operator."""
         return operator.__name__[5:]
+
+    @staticmethod
+    def get_operator_predicate(operator: callable) -> str:
+        """Deprecated: Use `jsonify`"""
+        return Operator.jsonify(operator=operator)
 
     @staticmethod
     def eval_begins_with(left, right):

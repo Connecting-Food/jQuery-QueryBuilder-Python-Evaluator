@@ -1,7 +1,7 @@
 import json
 import unittest
 
-from jqqb import QueryBuilder, RuleGroup
+from jqqb import QueryBuilder
 
 
 class TestCreateQueryBuilderInstance(unittest.TestCase):
@@ -74,7 +74,9 @@ class TestQueryBuilderInspect(unittest.TestCase):
         self.assertTrue(
             all(
                 key in result
-                for key in ("object", "predicate", "rules", "selected")
+                for key in (
+                    "object", "predicate", "results", "rules", "selected"
+                )
             )
         )
         self.assertEqual(result["object"], object)
@@ -83,6 +85,29 @@ class TestQueryBuilderInspect(unittest.TestCase):
         )
         self.assertIsInstance(result["rules"], dict)
         self.assertTrue(result["selected"])
+        self.assertEqual(
+            result["results"],
+            [
+                (
+                    {
+                        "operator": "equal",
+                        "inputs": [
+                            {
+                                "field": "dummy_key1",
+                                "value": "dummy_value",
+                                "type": "dummy_type1",
+                            },
+                            {
+                                "field": "dummy_key2",
+                                "value": "dummy_value",
+                                "type": "dummy_type2",
+                            }
+                        ],
+                    },
+                    ("dummy_value", "dummy_value", True),
+                ),
+            ]
+        )
 
         try:
             json.dumps(results)

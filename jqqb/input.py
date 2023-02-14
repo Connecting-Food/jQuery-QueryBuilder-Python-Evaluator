@@ -69,7 +69,13 @@ class Input:
 
     def get_value_from_object(self, object: dict) -> Any:
         fields = self.field.split(".")
-        last_object = reduce(lambda x, y: x.get(y, {}), fields[:-1], object)
+        # TODO: Allow to choose how to browse a list
+        # last_object = reduce(lambda x, y: x.get(y, {}), fields[:-1], object)
+        last_object = reduce(
+            lambda x, y: x[0] if isinstance(x, list) else x.get(y, {}),
+            fields[:-1],
+            object
+        )
         return last_object.get(fields[-1])
 
     def jsonify(self, object: dict) -> dict:

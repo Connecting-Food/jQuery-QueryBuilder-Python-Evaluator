@@ -41,12 +41,7 @@ class Rule:
         return [input.get_value(object=object) for input in self.inputs]
 
     def evaluate(self, object: dict) -> bool:
-        input_values = self._get_input_values(object)
-        return (
-            False
-            if Input.MissingKey in input_values
-            else self.operator(*input_values)
-        )
+        return self.operator(*self._get_input_values(object))
 
     def get_predicate(self, object: dict) -> str:
         input_predicates = [

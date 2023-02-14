@@ -5,9 +5,6 @@ from typing import Any, Optional, Union
 
 
 class Input:
-    class MissingKey:
-        pass
-
     class NotRetrievedValue:
         pass
 
@@ -73,7 +70,7 @@ class Input:
     def get_value_from_object(self, object: dict) -> Any:
         fields = self.field.split(".")
         last_object = reduce(lambda x, y: x.get(y, {}), fields[:-1], object)
-        return last_object.get(fields[-1], self.MissingKey)
+        return last_object.get(fields[-1])
 
     def jsonify(self, object: dict) -> dict:
         return {
@@ -86,7 +83,7 @@ class Input:
         cast_function = self._CAST_FUNCTIONS.get(self.type)
 
         if (
-            value_to_cast in (None, self.MissingKey, self.NotRetrievedValue)
+            value_to_cast in (None, self.NotRetrievedValue)
             or cast_function is None
         ):
             return value_to_cast

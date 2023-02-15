@@ -74,6 +74,9 @@ class Input:
             fields[:-1],
             object,
         )
+        last_object = (
+            last_object[0] if isinstance(last_object, list) else last_object
+        )
         return last_object.get(fields[-1])
 
     def jsonify(self, object: dict) -> dict:

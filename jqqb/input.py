@@ -13,15 +13,11 @@ class Input:
         "datetime": lambda x: (
             datetime.fromisoformat(x) if isinstance(x, str) else x
         ),
-        "date": lambda x: (
-            date.fromisoformat(x) if isinstance(x, str) else x
-        ),
+        "date": lambda x: (date.fromisoformat(x) if isinstance(x, str) else x),
         "double": float,
         "integer": int,
         "string": str,
-        "time": lambda x: (
-            time.fromisoformat(x) if isinstance(x, str) else x
-        ),
+        "time": lambda x: (time.fromisoformat(x) if isinstance(x, str) else x),
     }
 
     def __init__(
@@ -72,9 +68,11 @@ class Input:
         # TODO: Allow to choose how to browse a list
         # last_object = reduce(lambda x, y: x.get(y, {}), fields[:-1], object)
         last_object = reduce(
-            lambda x, y: x[0] if isinstance(x, list) else x.get(y, {}),
+            lambda x, y: x[0].get(y, {})
+            if isinstance(x, list)
+            else x.get(y, {}),
             fields[:-1],
-            object
+            object,
         )
         return last_object.get(fields[-1])
 

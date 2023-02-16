@@ -13,11 +13,11 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="jqqb",
-    version="0.1.4",
+    version="0.1.5",
     author="Connecting Food",
     author_email="developers@connecting-food.com",
     description="Python parsing, evaluation and inspection tools "
-                "for jQuery-QueryBuilder rules",
+    "for jQuery-QueryBuilder rules",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/Connecting-Food/jQueryQueryBuilder",
@@ -27,9 +27,7 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    install_requires=[
-        "pytimeparse~=1.1.8"
-    ],
+    install_requires=["pytimeparse~=1.1.8"],
     python_requires=">=3.6",
     test_suite="setup.unittest_test_suite",
 )

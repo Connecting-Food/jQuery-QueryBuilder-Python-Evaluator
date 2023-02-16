@@ -18,6 +18,8 @@ class Operator:
 
     @staticmethod
     def eval_begins_with(left, right):
+        if left is None:
+            return False
         if isinstance(left, list):
             return any(map(lambda x: x.startswith(right), left))
         return left.startswith(right)
@@ -31,6 +33,8 @@ class Operator:
 
     @staticmethod
     def eval_contains(left, right):
+        if left is None:
+            return False
         return right in left
 
     @staticmethod
@@ -51,6 +55,8 @@ class Operator:
 
     @staticmethod
     def eval_ends_with(left, right):
+        if left is None:
+            return False
         if isinstance(left, list):
             return any(map(lambda x: x.endswith(right), left))
         return left.endswith(right)
@@ -128,6 +134,8 @@ class Operator:
 
     @staticmethod
     def eval_not_begins_with(left, right):
+        if left is None:
+            return False
         if isinstance(left, list):
             return not any(map(lambda x: x.startswith(right), left))
         return not left.startswith(right)
@@ -145,6 +153,8 @@ class Operator:
 
     @staticmethod
     def eval_not_contains(left, right):
+        if left is None:
+            return False
         if isinstance(right, list):
             if isinstance(left, list):
                 return not any(
@@ -158,6 +168,8 @@ class Operator:
 
     @staticmethod
     def eval_not_ends_with(left, right):
+        if left is None:
+            return False
         if isinstance(left, list):
             return not any(map(lambda x: x.endswith(right), left))
         return not left.endswith(right)

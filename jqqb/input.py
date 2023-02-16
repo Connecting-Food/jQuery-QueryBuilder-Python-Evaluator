@@ -13,11 +13,11 @@ class Input:
         "datetime": lambda x: (
             datetime.fromisoformat(x) if isinstance(x, str) else x
         ),
-        "date": lambda x: (date.fromisoformat(x) if isinstance(x, str) else x),
+        "date": lambda x: date.fromisoformat(x) if isinstance(x, str) else x,
         "double": float,
         "integer": int,
         "string": str,
-        "time": lambda x: (time.fromisoformat(x) if isinstance(x, str) else x),
+        "time": lambda x: time.fromisoformat(x) if isinstance(x, str) else x,
     }
 
     def __init__(

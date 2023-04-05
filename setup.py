@@ -13,7 +13,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="jqqb",
-    version="0.1.5",
+    version="0.2.0",
     author="Connecting Food",
     author_email="developers@connecting-food.com",
     description="Python parsing, evaluation and inspection tools "
@@ -27,7 +27,7 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    install_requires=["pytimeparse~=1.1.8"],
+    install_requires=[],
     python_requires=">=3.6",
     test_suite="setup.unittest_test_suite",
 )

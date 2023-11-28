@@ -80,7 +80,7 @@ class Rule:
             return float(value_to_cast)
         elif self.type == "datetime":
             return (
-                datetime.strptime(value_to_cast, "%Y-%m-%dT%H:%M:%S.%fZ")
+                datetime.fromisoformat(value_to_cast)
                 if isinstance(value_to_cast, str)
                 else value_to_cast
             )

@@ -47,7 +47,7 @@ class Rule:
 
             self.get_input(obj[fields[fd_index]],results)
 
-        elif isinstance(obj,str):
+        else:
             results.append(self.typecast_value(obj))
 
         return results

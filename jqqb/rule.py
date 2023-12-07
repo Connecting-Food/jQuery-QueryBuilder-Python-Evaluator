@@ -15,11 +15,16 @@ class Rule:
         self.value = rule_dict["value"]
 
     def evaluate(self, obj):
-        result = self.get_operator()(self.get_input(obj), self.get_value())
+        results = []
+        result = self.get_operator()(
+            self.get_input(obj, results),
+            self.get_value()
+        )
         return result
 
     def inputs(self, obj):
-        inputs = self.get_input(obj)
+        results = []
+        inputs = self.get_input(obj, results)
         return inputs
 
     def values(self):
@@ -32,36 +37,24 @@ class Rule:
     def get_operator(self):
         return getattr(Operators, "eval_" + self.operator)
 
-    def get_input(self, obj):
+    def get_input(self, obj, results):
         fields = self.field.split(".")
-        result = obj
-        steps = len(fields)
-        for i in range(steps):
-            last_step = i == steps - 1
-            second_last_step = i == steps - 2
-            result = result.get(fields[i])
-            if (
-                second_last_step
-                and isinstance(result, list)
-                and isinstance(result[0], dict)
-            ):
-                result = [x[fields[steps - 1]] for x in result]
-                break
-            result = (
-                result[0]
-                if (
-                    result is not None
-                    and isinstance(result, list)
-                    and not last_step
-                )
-                else result
-            )
-            if result is None:
-                break
-        if isinstance(result, list):
-            return list(map(lambda x: self.typecast_value(x), result))
+        fd_index = len(fields) - 1
+
+        if isinstance(obj, list):
+            for i in range(len(obj)):
+                self.get_input(obj[i], results)
+
+        elif isinstance(obj, dict):
+            while fields[fd_index] not in obj:
+                fd_index -= 1
+
+            self.get_input(obj[fields[fd_index]], results)
+
         else:
-            return self.typecast_value(result)
+            results.append(self.typecast_value(obj))
+
+        return results
 
     def get_value(self):
         if isinstance(self.value, list):

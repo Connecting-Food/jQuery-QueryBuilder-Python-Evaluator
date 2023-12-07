@@ -16,7 +16,10 @@ class Rule:
 
     def evaluate(self, obj):
         results = []
-        result = self.get_operator()(self.get_input(obj,results), self.get_value())
+        result = self.get_operator()(
+            self.get_input(obj, results),
+            self.get_value()
+        )
         return result
 
     def inputs(self, obj):
@@ -34,18 +37,19 @@ class Rule:
     def get_operator(self):
         return getattr(Operators, "eval_" + self.operator)
 
-    def get_input(self,obj, results):
+    def get_input(self, obj, results):
         fields = self.field.split(".")
-        fd_index = len(fields)-1
+        fd_index = len(fields) - 1
+
         if isinstance(obj, list):
             for i in range(len(obj)):
-                self.get_input(obj[i],results)
+                self.get_input(obj[i], results)
 
-        elif isinstance(obj,dict):
+        elif isinstance(obj, dict):
             while fields[fd_index] not in obj:
-                fd_index = fd_index - 1
+                fd_index -= 1
 
-            self.get_input(obj[fields[fd_index]],results)
+            self.get_input(obj[fields[fd_index]], results)
 
         else:
             results.append(self.typecast_value(obj))

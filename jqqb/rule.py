@@ -54,7 +54,7 @@ class Rule:
         else:
             results.append(self.typecast_value(obj))
 
-        return results
+        return results[0] if len(results) == 1 else results
 
     def get_value(self):
         if isinstance(self.value, list):

@@ -167,3 +167,15 @@ class Operators:
         if right.isnumeric():
             return (len(left) if isinstance(left,list) else 1) >= int(right)
         return False
+
+    @staticmethod
+    def eval_len_less(left, right):
+        if right.isnumeric():
+            return (len(left) if isinstance(left,list) else 1) < int(right)
+        return False
+    
+    @staticmethod
+    def eval_len_less_or_equal(left, right):
+        if right.isnumeric():
+            return (len(left) if isinstance(left,list) else 1) <= int(right)
+        return False

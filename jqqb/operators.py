@@ -1,3 +1,5 @@
+from . import utils
+
 class Operators:
 
     # left = The property of the object being evaluated.
@@ -179,3 +181,15 @@ class Operators:
         if right.isnumeric():
             return (len(left) if isinstance(left,list) else 1) <= int(right)
         return False
+
+    @staticmethod
+    def eval_occurrence(left, right):
+        if not isinstance(left,list):
+            left = [left]
+
+        if utils.validate_string(right):
+            left_operand, operator, right_operand = utils.split_string_by_operator(right)
+            occurence = left.count(left_operand)
+            return operator(occurence, right_operand)
+        return False
+

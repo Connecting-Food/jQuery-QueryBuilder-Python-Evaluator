@@ -185,6 +185,21 @@ class Operators:
 
     @staticmethod
     def eval_occurrence(left, right):
+        """ 
+
+        This funtion compares the number of occurrences of a value with an
+        integer value and returns a boolean indicating whether the condition
+        is true or false
+
+        Args:
+            left (list): list of values extracted from the inputs object.
+            right (str): string that represents the condition that we want to 
+                check about the occurences. It must match this pattern: 
+                <value> <operator> <int>
+        
+        Returns:
+            bool: a boolean value whether the condition is true or false
+        """
         if not isinstance(left, list):
             left = [left]
 

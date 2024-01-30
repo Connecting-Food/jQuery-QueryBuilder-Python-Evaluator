@@ -1,3 +1,6 @@
+from . import utils
+
+
 class Operators:
 
     # left = The property of the object being evaluated.
@@ -155,3 +158,55 @@ class Operators:
         if isinstance(left, list):
             return not all([_ in right for _ in left])
         return left in right
+
+    @staticmethod
+    def eval_length_greater(left, right):
+        if right.isnumeric():
+            return (len(left) if isinstance(left, list) else 1) > int(right)
+        return False
+
+    @staticmethod
+    def eval_length_greater_or_equal(left, right):
+        if right.isnumeric():
+            return (len(left) if isinstance(left, list) else 1) >= int(right)
+        return False
+
+    @staticmethod
+    def eval_length_less(left, right):
+        if right.isnumeric():
+            return (len(left) if isinstance(left, list) else 1) < int(right)
+        return False
+
+    @staticmethod
+    def eval_length_less_or_equal(left, right):
+        if right.isnumeric():
+            return (len(left) if isinstance(left, list) else 1) <= int(right)
+        return False
+
+    @staticmethod
+    def eval_occurrence(left, right):
+        """ 
+
+        This funtion compares the number of occurrences of a value with an
+        integer value and returns a boolean indicating whether the condition
+        is true or false
+
+        Args:
+            left (list): list of values extracted from the inputs object.
+            right (str): string that represents the condition that we want to 
+                check about the occurences. It must match this pattern: 
+                <value> <operator> <int>
+        
+        Returns:
+            bool: a boolean value whether the condition is true or false
+        """
+        if not isinstance(left, list):
+            left = [left]
+
+        if utils.validate_string(right):
+            left_operand, operator, right_operand = (
+                utils.split_string_by_operator(right)
+            )
+            occurence = left.count(left_operand)
+            return operator(occurence, right_operand)
+        return False

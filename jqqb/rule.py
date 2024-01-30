@@ -39,17 +39,18 @@ class Rule:
 
     def get_input(self, obj, results):
         fields = self.field.split(".")
-        fd_index = len(fields) - 1
+        fd_index = 0
 
         if isinstance(obj, list):
             for i in range(len(obj)):
                 self.get_input(obj[i], results)
 
         elif isinstance(obj, dict):
-            while fields[fd_index] not in obj:
-                fd_index -= 1
+            while (fd_index < len(fields) and fields[fd_index] not in obj):
+                fd_index += 1
 
-            self.get_input(obj[fields[fd_index]], results)
+            if fd_index < len(fields) and fields[fd_index] in obj:
+                self.get_input(obj[fields[fd_index]], results)
 
         else:
             results.append(self.typecast_value(obj))

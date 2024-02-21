@@ -63,7 +63,7 @@ class Rule:
         return self.typecast_value(self.value)
 
     def typecast_value(self, value_to_cast):
-        if value_to_cast is None:
+        if value_to_cast is None or value_to_cast.strip() == "":
             return None
 
         if self.type == "string":

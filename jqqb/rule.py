@@ -53,17 +53,23 @@ class Rule:
                 self.get_input(obj[fields[fd_index]], results)
 
         else:
-            results.append(self.typecast_value(obj))
+            try:
+                results.append(self.typecast_value(obj))
+            except ValueError:
+                results.append(obj)
 
-        return results[0] if len(results) == 1 else results
+        return results if results else None
 
     def get_value(self):
-        if isinstance(self.value, list):
-            return list(map(lambda x: self.typecast_value(x), self.value))
-        return self.typecast_value(self.value)
+        try:
+            if isinstance(self.value, list):
+                return list(map(lambda x: self.typecast_value(x), self.value))
+            return self.typecast_value(self.value)
+        except ValueError:
+            return self.value
 
     def typecast_value(self, value_to_cast):
-        if value_to_cast is None or value_to_cast == "":
+        if value_to_cast is None:
             return None
 
         if self.type == "string":

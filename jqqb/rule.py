@@ -56,8 +56,9 @@ class Rule:
             try:
                 results.append(self.typecast_value(obj))
             except ValueError:
-                results.append(obj)
+                results.append(None)
 
+        results = [x for x in results if x is not None] if results else None
         return results if results else None
 
     def get_value(self):

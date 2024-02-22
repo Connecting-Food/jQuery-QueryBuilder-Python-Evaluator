@@ -42,13 +42,13 @@ class Operators:
     @staticmethod
     def eval_greater(left, right):
         if isinstance(left, list):
-            return any(map(lambda x: x > right, left))
+            return any(map(lambda x: x > right if type(x) == type(right) else False, left))
         return False
 
     @staticmethod
     def eval_greater_or_equal(left, right):
         if isinstance(left, list):
-            return any(map(lambda x: x >= right, left))
+            return any(map(lambda x: x >= right if type(x) == type(right) else False, left))
         return False
 
     @staticmethod
@@ -79,18 +79,18 @@ class Operators:
     def eval_is_null(inputs, _):
         if isinstance(inputs, list):
             return not any(map(lambda x: x is not None, inputs))
-        return False
+        return True
 
     @staticmethod
     def eval_less(left, right):
         if isinstance(left, list):
-            return any(map(lambda x: x < right, left))
+            return any(map(lambda x: x < right if type(x) == type(right) else False, left))
         return False
 
     @staticmethod
     def eval_less_or_equal(left, right):
         if isinstance(left, list):
-            return any(map(lambda x: x <= right, left))
+            return any(map(lambda x: x <= right if type(x) == type(right) else False, left))
         return False
 
     @staticmethod

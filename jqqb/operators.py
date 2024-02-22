@@ -161,27 +161,27 @@ class Operators:
 
     @staticmethod
     def eval_length_greater(left, right):
-        if right.isnumeric():
-            return (len(left) if isinstance(left, list) else 1) > int(right)
-        return False
+        if left is None:
+            return False
+        return (len(left) if isinstance(left, list) else 1) > int(right)
 
     @staticmethod
     def eval_length_greater_or_equal(left, right):
-        if right.isnumeric():
-            return (len(left) if isinstance(left, list) else 1) >= int(right)
-        return False
+        if left is None:
+            return False
+        return (len(left) if isinstance(left, list) else 1) >= int(right)
 
     @staticmethod
     def eval_length_less(left, right):
-        if right.isnumeric():
-            return (len(left) if isinstance(left, list) else 1) < int(right)
-        return False
+        if left is None:
+            return False
+        return (len(left) if isinstance(left, list) else 1) < int(right)
 
     @staticmethod
     def eval_length_less_or_equal(left, right):
-        if right.isnumeric():
-            return (len(left) if isinstance(left, list) else 1) <= int(right)
-        return False
+        if left is None:
+            return False
+        return (len(left) if isinstance(left, list) else 1) <= int(right)
 
     @staticmethod
     def eval_occurrence(left, right):

@@ -56,7 +56,8 @@ class Rule:
         else:
             results.append(self.typecast_value(obj, type=self.type))
 
-        return results[0] if len(results) == 1 else results
+        results = [x for x in results if x is not None] or None
+        return results
 
     def get_value(self):
         if isinstance(self.value, list):

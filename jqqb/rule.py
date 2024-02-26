@@ -13,6 +13,7 @@ class Rule:
         self.input = rule_dict["input"]
         self.operator = rule_dict["operator"]
         self.value = rule_dict["value"]
+        self.value_type = rule_dict["value_type"]
 
     def evaluate(self, obj):
         results = []
@@ -53,44 +54,50 @@ class Rule:
                 self.get_input(obj[fields[fd_index]], results)
 
         else:
-            results.append(self.typecast_value(obj))
+            results.append(self.typecast_value(obj, type=self.type))
 
-        return results[0] if len(results) == 1 else results
+        results = [x for x in results if x is not None] or None
+        return results
 
     def get_value(self):
         if isinstance(self.value, list):
-            return list(map(lambda x: self.typecast_value(x), self.value))
-        return self.typecast_value(self.value)
+            return list(
+                map(
+                    lambda x: self.typecast_value(x, type=self.value_type), 
+                    self.value
+                )
+            )
+        return self.typecast_value(self.value, type=self.value_type)
 
-    def typecast_value(self, value_to_cast):
-        if value_to_cast is None or value_to_cast == "":
+    def typecast_value(self, value_to_cast, type):
+        if value_to_cast is None:
             return None
 
-        if self.type == "string":
+        if type == "string":
             return str(value_to_cast)
-        elif self.type == "integer":
+        elif type == "integer":
             return int(value_to_cast)
-        elif self.type == "double":
+        elif type == "double":
             return float(value_to_cast)
-        elif self.type == "datetime":
+        elif type == "datetime":
             return (
                 datetime.fromisoformat(value_to_cast)
                 if isinstance(value_to_cast, str)
                 else value_to_cast
             )
-        elif self.type == "date":
+        elif type == "date":
             return (
                 datetime.strptime(value_to_cast, "%Y-%m-%d")
                 if isinstance(value_to_cast, str)
                 else value_to_cast
             )
-        elif self.type == "time":
+        elif type == "time":
             return (
                 timeparse(value_to_cast)
                 if isinstance(value_to_cast, str)
                 else value_to_cast
             )
-        elif self.type == "boolean":
+        elif type == "boolean":
             if isinstance(value_to_cast, str):
                 return value_to_cast.lower() in [
                     "true",
@@ -103,6 +110,6 @@ class Rule:
                     "certainly",
                     "uh-huh",
                 ]
-        elif self.type == "list":
+        elif type == "list":
             ...
         return value_to_cast

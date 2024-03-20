@@ -136,37 +136,43 @@ class Operators:
     @staticmethod
     def eval_length_equal(left, right):
         if isinstance(left, list):
-            return len(left) == int(right)
+            length = len(right) if isinstance(right, list) else int(right)
+            return len(left) == length
         return False
 
     @staticmethod
     def eval_length_not_equal(left, right):
         if isinstance(left, list):
-            return len(left) != int(right)
+            length = len(right) if isinstance(right, list) else int(right)
+            return len(left) != length
         return False
     
     @staticmethod
     def eval_length_greater(left, right):
         if isinstance(left, list):
-            return len(left) > int(right)
+            length = len(right) if isinstance(right, list) else int(right)
+            return len(left) > length
         return False
 
     @staticmethod
     def eval_length_greater_or_equal(left, right):
         if isinstance(left, list):
-            return len(left) >= int(right)
+            length = len(right) if isinstance(right, list) else int(right)
+            return len(left) >= length
         return False
 
     @staticmethod
     def eval_length_less(left, right):
         if isinstance(left, list):
-            return len(left) < int(right)
+            length = len(right) if isinstance(right, list) else int(right)
+            return len(left) < length
         return False
 
     @staticmethod
     def eval_length_less_or_equal(left, right):
         if isinstance(left, list):
-            return len(left) <= int(right)
+            length = len(right) if isinstance(right, list) else int(right)
+            return len(left) <= length
         return False
 
     @staticmethod

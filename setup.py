@@ -13,7 +13,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="jqqb",
-    version="1.4.1",
+    version="1.4.2",
     author="Connecting Food",
     author_email="developers@connecting-food.com",
     description="Python parsing, evaluation and inspection tools "

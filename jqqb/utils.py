@@ -6,7 +6,7 @@ from decimal import Decimal
 
 def validate_string(input_string):
     pattern = (
-        r'^\s*([^{}\s]+(\s+[^{}\s]+)*)\s+([><]=?|=)\s*([+-]?\d+(\.\d+)?)\s*$'
+        r"^\s*([^{}\s]+(\s+[^{}\s]+)*)\s+([><]=?|=)\s*([+-]?\d+(\.\d+)?)\s*$"
     )
     match = re.match(pattern, input_string)
     return bool(match)

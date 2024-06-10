@@ -132,7 +132,7 @@ class Operators:
         if isinstance(left, list):
             return not all([_ in right for _ in left])
         return False
-    
+
     @staticmethod
     def eval_length_equal(left, right):
         if isinstance(left, list):
@@ -146,7 +146,7 @@ class Operators:
             length = len(right) if isinstance(right, list) else int(right)
             return len(left) != length
         return False
-    
+
     @staticmethod
     def eval_length_greater(left, right):
         if isinstance(left, list):
@@ -177,7 +177,7 @@ class Operators:
 
     @staticmethod
     def eval_occurrence(left, right):
-        """ 
+        """
 
         This funtion compares the number of occurrences of a value with an
         integer value and returns a boolean indicating whether the condition
@@ -185,18 +185,20 @@ class Operators:
 
         Args:
             left (list): list of values extracted from the inputs object.
-            right (str): string that represents the condition that we want to 
-                check about the occurences. It must match this pattern: 
+            right (str): string that represents the condition that we want to
+                check about the occurences. It must match this pattern:
                 <value> <operator> <int>
-        
+
         Returns:
             bool: a boolean value whether the condition is true or false
         """
         if isinstance(left, list):
             if utils.validate_string(right):
-                left_operand, operator, right_operand = (
-                    utils.split_string_by_operator(right)
-                )
+                (
+                    left_operand,
+                    operator,
+                    right_operand,
+                ) = utils.split_string_by_operator(right)
                 occurence = left.count(left_operand)
                 return operator(occurence, right_operand)
             return False

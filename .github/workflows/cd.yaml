@@ -1,0 +1,49 @@
+name: Continuous Delivery
+
+on:
+  create:
+    tags:
+
+jobs:
+  build-django-version:
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: acceptance-runner
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - uses: KengoTODA/actions-setup-docker-compose@main
+        with:
+          version: '1.29.2'
+
+  create-release:
+    runs-on: acceptance-runner
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref_name }}
+          release_name: ${{ github.ref_name }}
+          draft: true
+          prerelease: false
+
+      # Slack Notification
+      - name: Slack Notification
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_CHANNEL: releases
+          SLACK_MESSAGE: |-
+            A new release is ready to be published
+            ${{ steps.create_release.outputs.html_url }}
+
+          SLACK_TITLE: New Release ${{ github.ref_name }}
+          SLACK_WEBHOOK: ${{ secrets.SLACK_RELEASES_WEBHOOK_URL }}

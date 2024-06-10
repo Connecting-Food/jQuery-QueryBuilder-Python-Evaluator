@@ -5,22 +5,8 @@ on:
     tags:
 
 jobs:
-  build-django-version:
-    if: startsWith(github.ref, 'refs/tags/')
-    runs-on: acceptance-runner
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
-
-      - uses: KengoTODA/actions-setup-docker-compose@main
-        with:
-          version: '1.29.2'
-
   create-release:
-    runs-on: acceptance-runner
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3

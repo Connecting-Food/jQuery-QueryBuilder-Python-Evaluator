@@ -5,6 +5,21 @@ from pytimeparse.timeparse import timeparse
 from jqqb.operators import Operators
 
 
+BOOLEAN_VALUES = (
+    "true",
+    "1",
+    "t",
+    "y",
+    "yes",
+    "yeah",
+    "yup",
+    "certainly",
+    "uh-huh",
+    "oui",
+    "o",
+)
+
+
 class Rule:
     def __init__(self, rule_dict):
         self.id = rule_dict["id"]
@@ -47,7 +62,7 @@ class Rule:
                 self.get_input(obj[i], results)
 
         elif isinstance(obj, dict):
-            while (fd_index < len(fields) and fields[fd_index] not in obj):
+            while fd_index < len(fields) and fields[fd_index] not in obj:
                 fd_index += 1
 
             if fd_index < len(fields) and fields[fd_index] in obj:
@@ -69,7 +84,8 @@ class Rule:
             )
         return self.typecast_value(self.value, type=self.value_type)
 
-    def typecast_value(self, value_to_cast, type):
+    @staticmethod
+    def typecast_value(value_to_cast, type):
         if value_to_cast is None:
             return None
 
@@ -79,37 +95,27 @@ class Rule:
             return int(value_to_cast)
         elif type == "double":
             return float(value_to_cast)
+        elif type == "boolean":
+            if isinstance(value_to_cast, str):
+                return value_to_cast.lower() in BOOLEAN_VALUES
+        elif type == "list":
+            ...
         elif type == "datetime":
             return (
                 datetime.fromisoformat(value_to_cast)
-                if isinstance(value_to_cast, str)
+                if (isinstance(value_to_cast, str) and value_to_cast != "")
                 else value_to_cast
             )
         elif type == "date":
             return (
                 datetime.strptime(value_to_cast, "%Y-%m-%d")
-                if isinstance(value_to_cast, str)
+                if (isinstance(value_to_cast, str) and value_to_cast != "")
                 else value_to_cast
             )
         elif type == "time":
             return (
                 timeparse(value_to_cast)
-                if isinstance(value_to_cast, str)
+                if (isinstance(value_to_cast, str) and value_to_cast != "")
                 else value_to_cast
             )
-        elif type == "boolean":
-            if isinstance(value_to_cast, str):
-                return value_to_cast.lower() in [
-                    "true",
-                    "1",
-                    "t",
-                    "y",
-                    "yes",
-                    "yeah",
-                    "yup",
-                    "certainly",
-                    "uh-huh",
-                ]
-        elif type == "list":
-            ...
         return value_to_cast

@@ -33,8 +33,7 @@ class Rule:
     def evaluate(self, obj):
         results = []
         result = self.get_operator()(
-            self.get_input(obj, results),
-            self.get_value()
+            self.get_input(obj, results), self.get_value()
         )
         return result
 
@@ -78,8 +77,8 @@ class Rule:
         if isinstance(self.value, list):
             return list(
                 map(
-                    lambda x: self.typecast_value(x, type=self.value_type), 
-                    self.value
+                    lambda x: self.typecast_value(x, type=self.value_type),
+                    self.value,
                 )
             )
         return self.typecast_value(self.value, type=self.value_type)

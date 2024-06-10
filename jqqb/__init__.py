@@ -3,7 +3,6 @@ from jqqb.rule_group import RuleGroup
 
 
 class QueryBuilder:
-
     def __init__(self, rule_set):
         if isinstance(rule_set, str):
             self.parsed_rule_set = json.loads(rule_set)
@@ -22,8 +21,9 @@ class QueryBuilder:
                 "object": obj,
                 "rules": self.parsed_rule_set,
                 "selected": self.object_matches_rules(obj),
-                "results": self.object_results_inspection(obj)
-            } for obj in objects
+                "results": self.object_results_inspection(obj),
+            }
+            for obj in objects
         ]
 
     def object_results_inspection(self, obj):

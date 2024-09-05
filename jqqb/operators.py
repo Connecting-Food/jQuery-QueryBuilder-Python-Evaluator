@@ -95,7 +95,7 @@ class Operators:
     def eval_less(left, right):
         if isinstance(left, list):
             return any(
-                map(lambda x: isinstance(x, type(right)) and  x < right, left)
+                map(lambda x: isinstance(x, type(right)) and x < right, left)
             )
         return False
 

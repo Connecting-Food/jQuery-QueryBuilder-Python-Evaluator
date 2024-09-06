@@ -16,7 +16,13 @@ class Operators:
     @staticmethod
     def eval_between(inputs, bounds):
         if isinstance(inputs, list):
-            return any(map(lambda x: bounds[0] < x < bounds[1], inputs))
+            return any(
+                map(
+                    lambda x: isinstance(x, type(bounds[0]))
+                    and bounds[0] < x < bounds[1],
+                    inputs,
+                )
+            )
         return False
 
     @staticmethod
@@ -42,13 +48,17 @@ class Operators:
     @staticmethod
     def eval_greater(left, right):
         if isinstance(left, list):
-            return any(map(lambda x: x > right, left))
+            return any(
+                map(lambda x: isinstance(x, type(right)) and x > right, left)
+            )
         return False
 
     @staticmethod
     def eval_greater_or_equal(left, right):
         if isinstance(left, list):
-            return any(map(lambda x: x >= right, left))
+            return any(
+                map(lambda x: isinstance(x, type(right)) and x >= right, left)
+            )
         return False
 
     @staticmethod
@@ -84,13 +94,17 @@ class Operators:
     @staticmethod
     def eval_less(left, right):
         if isinstance(left, list):
-            return any(map(lambda x: x < right, left))
+            return any(
+                map(lambda x: isinstance(x, type(right)) and x < right, left)
+            )
         return False
 
     @staticmethod
     def eval_less_or_equal(left, right):
         if isinstance(left, list):
-            return any(map(lambda x: x <= right, left))
+            return any(
+                map(lambda x: isinstance(x, type(right)) and x <= right, left)
+            )
         return False
 
     @staticmethod
@@ -102,7 +116,13 @@ class Operators:
     @staticmethod
     def eval_not_between(inputs, bounds):
         if isinstance(inputs, list):
-            return not any(map(lambda x: bounds[0] < x < bounds[1], inputs))
+            return not any(
+                map(
+                    lambda x: isinstance(x, type(bounds[0]))
+                    and bounds[0] < x < bounds[1],
+                    inputs,
+                )
+            )
         return False
 
     @staticmethod
